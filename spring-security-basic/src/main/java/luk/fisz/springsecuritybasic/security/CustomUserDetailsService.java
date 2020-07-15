@@ -1,13 +1,10 @@
 package luk.fisz.springsecuritybasic.security;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import luk.fisz.springsecuritybasic.db.User;
 import luk.fisz.springsecuritybasic.db.UserRepo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,13 +1,10 @@
 package luk.fisz.springsecuritybasic.controllers;
 
-import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.security.Principal;
 
 @Controller
 @RequestMapping("/")
@@ -18,21 +15,20 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping(value = "/user", produces = MediaType.TEXT_HTML_VALUE)
-    @ResponseBody
+    @GetMapping("/user")
     public String user() {
         return "user";
     }
 
-    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
-    @ResponseBody
+    @GetMapping("/admin")
     public String admin() {
         return "admin";
     }
 
     @GetMapping("/details")
-    public String details(Principal principal, Model model) {
-        model.addAttribute("principal", principal);
+    public String details(Authentication authentication, Model model) {
+        model.addAttribute("auth", authentication);
         return "details";
     }
+
 }
