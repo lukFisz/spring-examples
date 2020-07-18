@@ -11,13 +11,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.security.PublicKey;
 import java.util.List;
 
 @Controller
 public class MainController {
 
-    private final String LOGIN_FAILURE_MESSAGE = "Username or Password is incorrect";
+    private final String LOGIN_FAILURE_MESSAGE = "Username or/and password is incorrect";
 
     @GetMapping("/")
     public String home() {
@@ -30,9 +31,8 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public String loginError(@RequestParam(value = "error", required = false) String error, Model model) {
-        if (error != null)
-            model.addAttribute("errorMsg", LOGIN_FAILURE_MESSAGE);
+    public String loginError(Model model) {
+        model.addAttribute("errorMsg", LOGIN_FAILURE_MESSAGE);
         return "login";
     }
 
@@ -47,7 +47,7 @@ public class MainController {
     }
 
     @GetMapping("/details")
-    public String details(Authentication authentication, Model model) {
+    public String details(Authentication authentication, Model model, Principal principal) {
         model.addAttribute("auth", authentication);
         return "details";
     }
