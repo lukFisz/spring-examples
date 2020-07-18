@@ -2,6 +2,7 @@ package lf.springsecurityformlogin.controllers;
 
 import lf.springsecurityformlogin.db.User;
 import lf.springsecurityformlogin.db.UserRepo;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,45 +11,46 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.PublicKey;
 import java.util.List;
 
 @Controller
 public class MainController {
 
-    private final UserRepo userRepo;
-
-    public MainController(UserRepo userRepo) {
-        this.userRepo = userRepo;
-    }
+    private final String LOGIN_FAILURE_MESSAGE = "Username or Password is incorrect";
 
     @GetMapping("/")
-    @ResponseBody
-    public String home(@ModelAttribute("user") User user) {
-        return user.getUsername() + " " + user.getPassword();
-    }
-
-    @GetMapping("/home")
-    public String homeq(RedirectAttributes rattrs) {
-        rattrs.addFlashAttribute("user", userRepo.findByUsername("user"));
-        return "redirect:/";
+    public String home() {
+        return "home";
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error,
-                        Model model) {
-        String errorMsg = null;
-        if (error != null) errorMsg = "Username or Password is incorrect";
-        model.addAttribute("errorMsg", errorMsg);
+    public String login() {
         return "login";
     }
 
     @PostMapping("/login")
-    public String loginPOST() {
-        return "redirect:/login?error=true";
+    public String loginError(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null)
+            model.addAttribute("errorMsg", LOGIN_FAILURE_MESSAGE);
+        return "login";
     }
 
     @GetMapping("/user")
     public String user() {
         return "user";
     }
+
+    @GetMapping("/admin")
+    public String admin() {
+        return "admin";
+    }
+
+    @GetMapping("/details")
+    public String details(Authentication authentication, Model model) {
+        model.addAttribute("auth", authentication);
+        return "details";
+    }
+
+
 }

@@ -7,8 +7,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import javax.servlet.http.HttpServletResponse;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -29,19 +27,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .formLogin()
                     .loginPage("/login")
-                    .defaultSuccessUrl("/user")
-                    .failureForwardUrl("/login").failureHandler((httpServletRequest, httpServletResponse, e) -> {
-                        
-        })
-                    .permitAll()
+                    .defaultSuccessUrl("/")
+                    .failureForwardUrl("/login?error")
+                .and()
+                .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/")
                 .and()
                 .authorizeRequests()
                     .antMatchers("/").permitAll()
-                    .antMatchers("/user").hasAnyRole("ADMIN", "USER");
+                    .antMatchers("/details").authenticated()
+                    .antMatchers("/user").hasAnyRole("ADMIN", "USER")
+                    .antMatchers("/admin").hasRole("ADMIN");
 
-//        h2 console
-        http.authorizeRequests().antMatchers("/h2/**").permitAll();
-        http.headers().frameOptions().sameOrigin();
-        http.csrf().disable();
+        /** uncomment below in order to enable h2 web console */
+//        http
+//                .csrf().disable()
+//                .headers().frameOptions().sameOrigin()
+//                .and()
+//                .authorizeRequests().antMatchers("/h2/**").permitAll();
     }
+
 }
