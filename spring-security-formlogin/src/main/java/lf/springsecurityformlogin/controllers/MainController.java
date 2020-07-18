@@ -47,7 +47,7 @@ public class MainController {
     }
 
     @GetMapping("/details")
-    public String details(Authentication authentication, Model model, Principal principal) {
+    public String details(Authentication authentication, Model model) {
         model.addAttribute("auth", authentication);
         return "details";
     }
