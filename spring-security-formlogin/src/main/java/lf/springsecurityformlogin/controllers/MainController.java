@@ -1,19 +1,10 @@
 package lf.springsecurityformlogin.controllers;
 
-import lf.springsecurityformlogin.db.User;
-import lf.springsecurityformlogin.db.UserRepo;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.security.Principal;
-import java.security.PublicKey;
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class MainController {
@@ -26,8 +17,11 @@ public class MainController {
     }
 
     @GetMapping("/login")
-    public String login() {
-        return "login";
+    public String login(Authentication auth) {
+        if (auth == null)
+            return "login";
+        else
+            return "redirect:/";
     }
 
     @PostMapping("/login")
@@ -51,6 +45,5 @@ public class MainController {
         model.addAttribute("auth", authentication);
         return "details";
     }
-
 
 }
