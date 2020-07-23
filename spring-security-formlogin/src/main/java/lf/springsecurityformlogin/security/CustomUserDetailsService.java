@@ -1,4 +1,4 @@
-package lf.springsecurityformlogin.security;
+package luk.fisz.springsecurityjwtauthentication.security;
 
 import lf.springsecurityformlogin.db.User;
 import lf.springsecurityformlogin.db.UserRepo;

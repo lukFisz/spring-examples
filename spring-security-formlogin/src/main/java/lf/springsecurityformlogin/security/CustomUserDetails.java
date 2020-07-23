@@ -1,4 +1,4 @@
-package lf.springsecurityformlogin.security;
+package luk.fisz.springsecurityjwtauthentication.security;
 
 import lf.springsecurityformlogin.db.User;
 import org.springframework.security.core.GrantedAuthority;
