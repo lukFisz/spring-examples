@@ -4,7 +4,7 @@ This is simple MVC application shows how basic auth can be configured in Spring.
 Dependencies (for more details see **pom.xml**):
  - Spring Security 
  - Spring Data JPA 
- - Spring MVC
+ - Spring Web
  - Thymeleaf 
  - H2database
  - Lombok 
