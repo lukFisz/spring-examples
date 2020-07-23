@@ -32,4 +32,9 @@ public class MainController {
         return userRepo.findAll();
     }
 
+    @PostMapping("/user/add")
+    public List<User> userAdd(@RequestBody User user) {
+        userRepo.save(user);
+        return userRepo.findAll();
+    }
 }

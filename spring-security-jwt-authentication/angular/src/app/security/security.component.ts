@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {JwtClientService} from "../jwt/jwt-client.service";
+import {Component, OnInit} from '@angular/core';
+import {UserService} from "../user/user.service";
 
 @Component({
   selector: 'app-security',
@@ -9,29 +9,46 @@ import {JwtClientService} from "../jwt/jwt-client.service";
 export class SecurityComponent implements OnInit {
 
   auth: any = {
-    'username':'user',
-    'password':'user123'
+    'username': 'user',
+    'password': 'user123'
   };
+
+  newuser: any = {
+    username: 'user2',
+    password: 'user123',
+    role: 'USER',
+    active: true
+  }
 
   token: any
 
-  constructor(private jwtService: JwtClientService) { }
-
-  ngOnInit(): void {
-    this.getAccessToken(this.auth).subscribe(value => {
-      this.token = value.headers.get('Authorization');
-    });
+  constructor(private userService: UserService) {
   }
 
-  private getAccessToken(authRequest) {
-    return this.jwtService.generateToken(authRequest);
+  ngOnInit(): void {
+    this.userService
+      .login(this.auth)
+      .subscribe(value => {
+        this.token = value.headers.get('Authorization');
+      });
   }
 
   user() {
-    this.jwtService.getUser(this.token).subscribe(value => console.log(value))
+    this.userService
+      .getUser(this.token)
+      .subscribe(value => console.log(value))
   }
 
   users() {
-    this.jwtService.getAllUsers(this.token).subscribe(value => console.log(value));
+    this.userService
+      .getAllUsers(this.token)
+      .subscribe(value => console.log(value));
   }
+
+  newUser() {
+    this.userService
+      .newUser(this.token, this.newuser)
+      .subscribe(value => console.log(value));
+  }
+
 }

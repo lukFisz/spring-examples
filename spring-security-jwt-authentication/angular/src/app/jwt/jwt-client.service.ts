@@ -6,30 +6,24 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class JwtClientService {
 
+  private URL = 'http://localhost:8080'
+
   constructor(private httpclient: HttpClient) {  }
 
   public generateToken(request) {
     return this.httpclient.post(
-      "http://localhost:8080/login",
+      this.URL + '/login',
       request,
       {observe: 'response'}
     )
   }
 
-  public getUser(token) {
-    return this.getRequest('http://localhost:8080/api/user', token)
-  }
-
-  public getAllUsers(token) {
-    return this.getRequest('http://localhost:8080/api/users', token)
-  }
-
   public getRequest(route, token) {
-    return this.httpclient.get(route, {headers: this.getPreparedHeaders(token)})
+    return this.httpclient.get(this.URL + '/api' + route, {headers: this.getPreparedHeaders(token)})
   }
 
   public postRequest(route, token, body) {
-    return this.httpclient.post(route, body,{headers: this.getPreparedHeaders(token)})
+    return this.httpclient.post(this.URL + '/api' + route, body,{headers: this.getPreparedHeaders(token)})
   }
 
   private getPreparedHeaders(token) {
