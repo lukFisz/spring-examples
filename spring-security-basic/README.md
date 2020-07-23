@@ -1,5 +1,5 @@
 ##  Http BASIC authentication example using Spring Security
-This is simple MVC application with database-backed shows how can be basic auth configured in Spring.
+This is simple MVC application shows how basic auth can be configured in Spring.
 
 Dependencies (for more details see **pom.xml**):
  - Spring Security 
