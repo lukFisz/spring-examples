@@ -6,28 +6,28 @@ import {JwtClientService} from "../jwt/jwt-client.service";
 })
 export class UserService {
 
-  constructor(private jwtService: JwtClientService) {
+  constructor(private jwt: JwtClientService) {
   }
 
   login(auth) {
-    return this.jwtService.generateToken(auth)
+    return this.jwt.generateToken(auth)
   }
 
   logout() {
-    return this.jwtService.getRequest('/logout', {})
+    this.jwt.destroy();
+    return this.jwt.post('/logout')
   }
 
-  getUser(token) {
-    return this.jwtService.getRequest('/user', token)
+  getUser() {
+    return this.jwt.get('/user')
   }
 
-  getAllUsers(token) {
-    return this.jwtService.getRequest('/users', token)
+  getAllUsers() {
+    return this.jwt.get('/users')
   }
 
-  newUser(token, user) {
-    return this.jwtService.postRequest('/user/add', token, user)
+  newUser(user) {
+    return this.jwt.post('/user/add', user)
   }
-
 
 }
