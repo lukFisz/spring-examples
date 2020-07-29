@@ -3,7 +3,7 @@ This is simple MVC application with basic auth configuration.
 
 To build jar file run: 
 
-    ./mvnv clean install
+    ./mvnw clean install
     
  To execute the JAR file run:
  
