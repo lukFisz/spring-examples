@@ -1,4 +1,4 @@
-package luk.fisz.springsecurityjwtauthentication.security;
+package lf.springsecurityformlogin.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
