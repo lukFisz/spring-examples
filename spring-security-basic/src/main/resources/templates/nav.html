@@ -1,0 +1,28 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/}">Spring Security Basic</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI().equals('/') ? 'active':''}">
+                <a class="nav-link" th:href="@{/}">Home</a>
+            </li>
+            <li class="nav-item"
+                th:classappend="${#httpServletRequest.getRequestURI().startsWith('/details') ? 'active':''}">
+                <a class="nav-link" th:href="@{/details}">Details</a>
+            </li>
+            <li class="nav-item"
+                th:classappend="${#httpServletRequest.getRequestURI().startsWith('/user') ? 'active':''}">
+                <a class="nav-link" th:href="@{/user}">User</a>
+            </li>
+            <li class="nav-item"
+                th:classappend="${#httpServletRequest.getRequestURI().startsWith('/admin') ? 'active':''}">
+                <a class="nav-link" th:href="@{/admin}">Admin</a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
