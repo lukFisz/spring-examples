@@ -1,1 +1,32 @@
 
+.container {
+  margin-top: 20px;
+}
+
+.btn-outline-danger, .btn-outline-success {
+  margin-left: 10px;
+}
+
+.badge-success, .badge-danger {
+  cursor: pointer;
+}
+
+.btn-primary, .btn-secondary, .btn-success {
+  margin: 5px;
+}
+
+.badge{
+  margin-right: 5px;
+}
+
+.badge-danger {
+  animation-name: anim;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes anim {
+  0% {background-color: #DC3545;}
+  50% {background-color: darkgray;}
+  100% {background-color: #DC3545;}
+}

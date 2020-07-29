@@ -1,58 +1,83 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {UserService} from "./user.service";
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {JwtClientService} from "../jwt/jwt-client.service";
-import {Principal} from "../models/principal";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {FormGroup} from "@angular/forms";
 
 @Component({
-  selector: 'app-security',
+  selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
 
 export class UserComponent implements OnInit {
 
-  @ViewChild('div') div;
+  isTokenCreatedMsg: string = 'Token missing';
+  allUsers: any;
+  selectedLogin: any;
+  currentUser: any;
+  receivedData: any;
+  newUserUsername: any;
+  newUserPassword: any;
+  newUserRole: any;
+  formGroup: any;
 
-  principal: Principal;
-
-  auth: any = {
-    'username': 'user',
-    'password': 'user123'
-  };
-
-  newuser: any = {
-    username: 'user2',
-    password: 'user123',
-    role: 'USER',
-    active: true
+  constructor(public jwt: JwtClientService, private modalService: NgbModal) {
   }
 
-  constructor(private userService: UserService) {  }
-
   ngOnInit(): void {
-    this.userService.login(this.auth);
+    this.logout();
+    this.jwt.get('/users').subscribe(value => this.allUsers = value);
+  }
+
+  login() {
+    if (this.selectedLogin !== undefined) {
+      let user = this.allUsers[this.selectedLogin - 1];
+      this.currentUser = user;
+      this.jwt.generateToken({username: user.username, password: `${user.username}123`},
+        () => {
+          this.isTokenCreatedMsg = `Token created (click to display)`;
+      });
+    }
+  }
+
+  logout() {
+    this.jwt.destroy();
+    this.isTokenCreatedMsg = 'Token missing';
+    this.currentUser = null;
+    this.receivedData = {};
   }
 
   user() {
-    this.userService
-      .getUser()
-      .subscribe(value => this.insert(value))
+    this.jwt.get('/user')
+      .subscribe(value => {
+        this.receivedData = value
+      }, error => {
+        this.receivedData = error;
+      });
   }
 
   users() {
-    this.userService
-      .getAllUsers()
-      .subscribe(value => console.log(value));
+    this.jwt.get('/users')
+      .subscribe(value => this.receivedData = value);
   }
 
-  newUser() {
-    this.userService
-      .newUser(this.newuser)
-      .subscribe(value => console.log(value));
+  showToken() {
+    let msg = this.jwt.token() !== null ? this.jwt.token() : 'Token missing'
+    window.alert(msg)
   }
 
-  insert(content) {
-    this.principal = content as Principal;
+  admin() {
+    this.jwt.get('/admin').subscribe(
+      value => this.receivedData = value,
+        error => this.receivedData = error
+    );
+  }
+
+  newUser(newUserModal: TemplateRef<any>) {
+  }
+
+  openNewUserModal(content) {
+    this.modalService.open(content)
   }
 
 

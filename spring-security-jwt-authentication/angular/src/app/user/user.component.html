@@ -1,3 +1,95 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-12">
+
+      <span class="badge badge-pill"
+            (click)="showToken()"
+            [class.badge-danger]="!this.jwt.isTokenStored()"
+            [class.badge-success]="this.jwt.isTokenStored()">
+        {{isTokenCreatedMsg}}
+      </span>
+      <span *ngIf="currentUser" class="badge badge-pill badge-info">Logged in user: {{currentUser?.username}}</span>
+      <br>
+      <br>
+
+      <div class="row">
+        <div class="col-5">
+          <div *ngIf="selectedLogin === undefined" class="col-12" style="text-align: center">
+            <div class="alert alert-danger" role="alert">
+              Choose user, please.
+            </div>
+          </div>
+          <div class="col-12 input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Login as...</label>
+            </div>
+            <select [(ngModel)]="selectedLogin" class="custom-select" id="inputGroupSelect01">
+              <option *ngFor="let user of allUsers" value="{{user.id}}">{{user.username}}</option>
+            </select>
+            <button *ngIf="!jwt.isTokenStored()" (click)="login()" type="button" class="btn btn-outline-success">Sign
+              in
+            </button>
+            <button *ngIf="jwt.isTokenStored()" (click)="logout()" type="button" class="btn btn-outline-danger">Logout
+            </button>
+          </div>
+          <div class="col-12">
+            <p>Restricted access:</p>
+            <button (click)="user()" class="btn btn-primary btn-sm">Current user details</button>
+            <button (click)="admin()" class="btn btn-primary btn-sm">For admin only</button>
+            <button (click)="openNewUserModal(newUserModal)" class="btn btn-success btn-sm">Add user (only admin)
+            </button>
+            <br>
+            <br>
+            <p>Unrestricted access:</p>
+            <button (click)="users()" class="btn btn-secondary btn-sm">Display all users</button>
+          </div>
+        </div>
+        <div class="col-7">
+          <h3>Received from backend server:</h3>
+          <div class="jumbotron">
+            <p>{{receivedData | json}}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
 
 
-{{userss}}
+<!--TODO: fix form in modal display-->
+<ng-template #newUserModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Add user</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div [formGroup]="formGroup" (ngSubmit)="newUser(newUserModal)">
+      <div class="form-group">
+        <label for="exampleInputUsername1">Username:</label>
+        <input formControlName="newUserUsername" type="email" class="form-control" id="exampleInputUsername1" aria-describedby="emailHelp"
+               placeholder="Username">
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Password:</label>
+        <input formControlName="newUserPassword" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Role:</label>
+        <select formControlName="newUserRole" class="form-control" id="exampleFormControlSelect1">
+          <option value="USER">USER</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-success" (click)="newUser(newUserModal)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+</ng-template>
+

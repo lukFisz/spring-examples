@@ -1,20 +1,25 @@
 package luk.fisz.springsecurityjwtauthentication.controllers;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import luk.fisz.springsecurityjwtauthentication.db.User;
 import luk.fisz.springsecurityjwtauthentication.db.UserRepo;
-import luk.fisz.springsecurityjwtauthentication.security.jwt.JwtProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.List;
-
-import static luk.fisz.springsecurityjwtauthentication.security.jwt.JwtProperties.HEADER_NAME;
 
 @RestController
 @RequestMapping("/api")
 public class MainController {
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    class Message{
+        String content;
+    }
 
     private final UserRepo userRepo;
 
@@ -30,6 +35,11 @@ public class MainController {
     @GetMapping("/users")
     public List<User> users() {
         return userRepo.findAll();
+    }
+
+    @GetMapping("/admin")
+    public Message admin() {
+        return new Message("Only admin can see this!");
     }
 
     @PostMapping("/user/add")
