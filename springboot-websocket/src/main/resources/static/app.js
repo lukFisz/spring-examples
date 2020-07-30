@@ -35,7 +35,16 @@ function connectWithRoom(oldRoomId, newRoomId) {
 }
 
 function displayMessage(respond) {
-        $('div#messages').append(`<p>${respond.sender}: ${respond.content}</p>`)
+    let username = $('#username_').text();
+    /*let or var?*/
+    let type = 'sent';
+    if (respond.sender === username)
+        type = 'replies'
+    $('div#messages ul').append(`
+                <li class="${type}">
+                    <p><span class="sender-info"><strong style="font-size: 1.2em">${respond.sender}</strong> ${new Date().toLocaleString()}</span><br>${respond.content}</p>
+                </li>`)
+    $('div#messages').scrollTop($('div#messages').height()+1000);
 }
 
 function disconnect() {
@@ -45,12 +54,19 @@ function disconnect() {
 }
 
 function changeRoom(oldRoomId, newRoomId) {
+    $('div#messages ul').text('')
     disconnect()
     connect(oldRoomId, newRoomId)
     notifyRoomChange(oldRoomId, newRoomId)
+    for (let i = 0; i < chatRoomsList.length; i++){
+        if (chatRoomsList[i].id === newRoomId) {
+            $('#roomHeaderName').html(`<span class="name-circle" style="background-color: #27ae60">${chatRoomsList[i].name[0].toUpperCase()}</span> ${chatRoomsList[i].name}`)
+        }
+    }
 }
 
 function sendMessage(chatRoomId, message) {
+    $("#inputMessageContent").val('')
     if (stompClient !== null)
         stompClient.send("/chat/room/" + chatRoomId, {}, JSON.stringify({'content': message}));
 }
@@ -58,6 +74,12 @@ function sendMessage(chatRoomId, message) {
 function notifyRoomChange(oldRoomId, newRoomId) {
     if (stompClientNotify !== null)
         stompClientNotify.send("/chat/notify", {}, JSON.stringify({'oldRoomId': oldRoomId, 'newRoomId': newRoomId}));
+}
+
+function chooseRoom(e) {
+    let oldRoomId = chatRoomID;
+    chatRoomID = $(e).children('input').val();
+    changeRoom(oldRoomId, chatRoomID)
 }
 
 $(function () {
@@ -72,6 +94,15 @@ $(function () {
         success : function(response) {
             chatRoomsList = response
             chatRoomsList.forEach(function (e) {
+                $('#contacts ul').append(`
+                <li class="contact" onclick="chooseRoom(this)">
+                    <input type="hidden" value="${e.id}">
+                    <div class="wrap">
+                        <div class="meta">
+                            <p class="name">${e.name}</p>
+                        </div>
+                    </div>
+                </li>`)
                 $("#rooms").append(`<option value="${e.id}">${e.name}</option>`)
             })
         },
@@ -81,14 +112,8 @@ $(function () {
     const socket = new SockJS('/ws-chat');
     stompClientNotify = Stomp.over(socket);
 
-    $('#btnChooseRoom').on('click', function(){
-        let oldRoomId = chatRoomID;
-        chatRoomID = $("select#rooms").children("option:selected").val();
-        changeRoom(oldRoomId, chatRoomID)
-    });
-
     $('button#btnSend').on('click', function(){
-        sendMessage(chatRoomID, $("#message").val())
+        sendMessage(chatRoomID, $("#inputMessageContent").val())
     })
 
 })

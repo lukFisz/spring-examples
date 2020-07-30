@@ -28,6 +28,11 @@ public class MainController {
     private final List<ChatRoom> chatRooms = new ArrayList<>();
     private final Map<String, List<String>> participants = new HashMap<>();
 
+
+    private boolean b = true;
+
+
+
     public MainController(SimpMessagingTemplate template) {
         this.template = template;
     }
@@ -63,10 +68,13 @@ public class MainController {
     public String chat(HttpSession session,
                        Model model) {
 
-        for (int i = 0; i < 4; i++) {
-            String uuid = generateRandomUUID();
-            chatRooms.add(new ChatRoom(uuid, "name" + i));
-            participants.put(uuid, new ArrayList<>());
+        if (b){
+            for (int i = 0; i < 4; i++) {
+                String uuid = generateRandomUUID();
+                chatRooms.add(new ChatRoom(uuid, "name" + i));
+                participants.put(uuid, new ArrayList<>());
+            }
+            b = false;
         }
 
         if (session.getAttribute(SESSION_USERNAME) == null) return "redirect:/login";
