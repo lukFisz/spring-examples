@@ -6,4 +6,4 @@
 
 **spring-security-jwt-authentication** - example of Spring Security JWT authentication with frontend written in Angular (Spring Boot + Spring Security + Angular)
 
-**springboot-websocket** - example of Web Chat application using Websocket (Spring Boot + Websocket + STOMP + SockJS)
+**springboot-websocket** - example of Live Chat application (Spring Boot + Websocket + STOMP + SockJS)
