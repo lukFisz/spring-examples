@@ -1,24 +1,41 @@
 let stompClient = null;
+let stompClientNotify = null;
 let chatRoomsList = null;
 let chatRoomID = null;
 
-function connect(id) {
+function connect(oldRoomId, newRoomId) {
     const socket = new SockJS('/ws-chat');
     stompClient = Stomp.over(socket);
-    connectWithRoom(id)
+    connectWithRoom(oldRoomId, newRoomId)
 }
 
-function connectWithRoom(id, func) {
+function fetchRoomParticipants(roomId, func) {
+    $.ajax({
+        url : "/fetch/participants/",
+        method : "post",
+        dataType : "json",
+        data : { roomID : roomId },
+        success : function(response) {
+            func(response)
+        },
+        error : function() {} // TODO: error ajax fetch participants
+    })
+}
+
+function connectWithRoom(oldRoomId, newRoomId) {
+
     stompClient.connect({}, function (frame) {
-        stompClient.subscribe('/topic/room/' + id, function (responds) {
-            displayMessage(JSON.parse(responds.body));
+        stompClient.subscribe('/topic/room/' + newRoomId, function (respond) {
+            displayMessage(JSON.parse(respond.body));
+            fetchRoomParticipants(newRoomId, function (participants) {
+                console.log(participants)
+            })
         });
     });
 }
 
 function displayMessage(respond) {
-    console.log(respond)
-    $('div#messages').append(`<p>${respond.sender}: ${respond.content}</p>`)
+        $('div#messages').append(`<p>${respond.sender}: ${respond.content}</p>`)
 }
 
 function disconnect() {
@@ -27,9 +44,10 @@ function disconnect() {
     }
 }
 
-function changeRoom(id) {
+function changeRoom(oldRoomId, newRoomId) {
     disconnect()
-    connect(id)
+    connect(oldRoomId, newRoomId)
+    notifyRoomChange(oldRoomId, newRoomId)
 }
 
 function sendMessage(chatRoomId, message) {
@@ -37,10 +55,16 @@ function sendMessage(chatRoomId, message) {
         stompClient.send("/chat/room/" + chatRoomId, {}, JSON.stringify({'content': message}));
 }
 
+function notifyRoomChange(oldRoomId, newRoomId) {
+    if (stompClientNotify !== null)
+        stompClientNotify.send("/chat/notify", {}, JSON.stringify({'oldRoomId': oldRoomId, 'newRoomId': newRoomId}));
+}
+
 $(function () {
     $("form").on('submit', function (e) {
         e.preventDefault();
     });
+
     $.ajax({
         url : "/fetch/chatrooms",
         method : "post",
@@ -54,10 +78,13 @@ $(function () {
         error : function() {} // TODO: error ajax chat rooms fetch
     })
 
+    const socket = new SockJS('/ws-chat');
+    stompClientNotify = Stomp.over(socket);
+
     $('#btnChooseRoom').on('click', function(){
-        disconnect();
+        let oldRoomId = chatRoomID;
         chatRoomID = $("select#rooms").children("option:selected").val();
-        changeRoom(chatRoomID)
+        changeRoom(oldRoomId, chatRoomID)
     });
 
     $('button#btnSend').on('click', function(){

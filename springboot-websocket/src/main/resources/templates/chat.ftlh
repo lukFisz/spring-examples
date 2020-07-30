@@ -22,6 +22,7 @@
 <select name="rooms" id="rooms">
     <option value=""></option>
 </select>
+<p>Logged in user: <strong id="username">${username!}</strong></p>
 <button type="button" id="btnChooseRoom">Connect to room</button>
 <input type="text" id="message">
 <button type="button" id="btnSend">Send message</button>
