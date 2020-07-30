@@ -1,8 +1,8 @@
 package luk.fisz.springbootwebsocket;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import luk.fisz.springbootwebsocket.models.ChatRoom;
+import luk.fisz.springbootwebsocket.models.Message;
+import luk.fisz.springbootwebsocket.models.Notify;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -10,7 +10,10 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -28,30 +31,6 @@ public class MainController {
     public MainController(SimpMessagingTemplate template) {
         this.template = template;
     }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Message {
-        private String content;
-        private String sender;
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class ChatRoom {
-        private String id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    static class Notify {
-        private String oldRoomId;
-        private String newRoomId;
-    }
-
 
     @MessageMapping("/room/{roomID}")
     public void message(@DestinationVariable String roomID,
@@ -72,12 +51,12 @@ public class MainController {
         if (messageHeaderAccessor.getSessionAttributes() == null) return;
 
         Object username = messageHeaderAccessor.getSessionAttributes().get(SESSION_USERNAME);
-        if (notify.oldRoomId != null) {
-            participants.get(notify.oldRoomId).remove(username.toString());
-            template.convertAndSend("/topic/room/" + notify.oldRoomId, new Message("Has left the chat", username.toString()));
+        if (notify.getOldRoomId() != null) {
+            participants.get(notify.getOldRoomId()).remove(username.toString());
+            template.convertAndSend("/topic/room/" + notify.getOldRoomId(), new Message("Has left the chat", username.toString()));
         }
-        participants.get(notify.newRoomId).add(username.toString());
-        template.convertAndSend("/topic/room/" + notify.newRoomId, new Message("Has join the chat", username.toString()));
+        participants.get(notify.getNewRoomId()).add(username.toString());
+        template.convertAndSend("/topic/room/" + notify.getNewRoomId(), new Message("Has join the chat", username.toString()));
     }
 
     @GetMapping("/")
