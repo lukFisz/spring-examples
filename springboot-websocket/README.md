@@ -1,6 +1,4 @@
-## IN PROGRESS.
-
-###  Live Chat app
+## Live Chat app
 This is simple live chat application build using Spring Boot and Websocket. 
 
 To build jar file run: 
