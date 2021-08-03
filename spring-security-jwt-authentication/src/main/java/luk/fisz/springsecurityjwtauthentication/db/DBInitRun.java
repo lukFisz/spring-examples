@@ -17,8 +17,8 @@ public class DBInitRun implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User user = new User("user", passwordEncoder.encode("user123"), "USER", true);
-        User admin = new User("admin", passwordEncoder.encode("admin123"), "ADMIN", true);
+        User user = new User("user", passwordEncoder.encode("user"), "USER", true);
+        User admin = new User("admin", passwordEncoder.encode("admin"), "ADMIN", true);
         userRepo.save(user);
         userRepo.save(admin);
     }

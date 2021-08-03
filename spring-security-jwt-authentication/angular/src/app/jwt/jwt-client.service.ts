@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ApiProperties} from "./api-properties";
-import {Observable} from "rxjs";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {ApiProperties} from './api-properties';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class JwtClientService {
         ApiProperties.SESSION_TOKEN_NAME,
         value.headers.get(ApiProperties.HEADER_PARAM_NAME)
       );
-      success()
+      success();
     }, e => error(e));
   }
 
@@ -30,22 +30,24 @@ export class JwtClientService {
   }
 
   post(route, body = {}): Observable<any> {
-    return this.httpclient.post(ApiProperties.apiURL() + route, body, {headers: this.getPreparedHeaders()});
+    return this.httpclient.post(ApiProperties.apiURL() + route, body, {observe: 'response', headers: this.getPreparedHeaders()});
   }
 
   getPreparedHeaders(): HttpHeaders {
-    if (this.isTokenStored())
+    if (this.isTokenStored()) {
       return new HttpHeaders().set(ApiProperties.HEADER_PARAM_NAME, this.token());
-    else
+    }
+    else {
       return new HttpHeaders();
+    }
   }
 
   token(): string {
-    return localStorage.getItem(ApiProperties.SESSION_TOKEN_NAME)
+    return localStorage.getItem(ApiProperties.SESSION_TOKEN_NAME);
   }
 
   isTokenStored(): boolean {
-    return localStorage.getItem(ApiProperties.SESSION_TOKEN_NAME) !== null
+    return localStorage.getItem(ApiProperties.SESSION_TOKEN_NAME) !== null;
   }
 
   destroy(): boolean {

@@ -1,10 +1,10 @@
 
 export class ApiProperties {
-  static URL: string = 'http://localhost:8080';
-  static LOGIN_PREFIX: string = '/login'
-  static API_PREFIX: string = '/api'
-  static HEADER_PARAM_NAME: string = 'Authorization';
-  static SESSION_TOKEN_NAME: string = '__jwtToken';
+  static URL = 'http://localhost:8080';
+  static LOGIN_PREFIX = '/login';
+  static API_PREFIX = '/api';
+  static HEADER_PARAM_NAME = 'Authorization';
+  static SESSION_TOKEN_NAME = '__jwtToken';
 
   static loginURL(): string {
     return this.URL + this.LOGIN_PREFIX;

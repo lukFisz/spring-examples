@@ -2,6 +2,7 @@ package luk.fisz.springsecurityjwtauthentication.db;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 

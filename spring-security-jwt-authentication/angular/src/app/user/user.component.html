@@ -37,7 +37,7 @@
             <p>Restricted access:</p>
             <button (click)="user()" class="btn btn-primary btn-sm">Current user details</button>
             <button (click)="admin()" class="btn btn-primary btn-sm">For admin only</button>
-            <button (click)="openNewUserModal(newUserModal)" class="btn btn-success btn-sm">Add user (only admin)
+            <button (click)="openModal(mymodal)" class="btn btn-success btn-sm">Add user (only admin)
             </button>
             <br>
             <br>
@@ -58,38 +58,27 @@
   </div>
 </div>
 
-
-<!--TODO: fix form in modal display-->
-<ng-template #newUserModal let-modal>
+<ng-template #mymodal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Add user</h4>
+    <h4 class="modal-title" id="modal-basic-title">Add new user</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">×</span>
     </button>
   </div>
   <div class="modal-body">
-    <div [formGroup]="formGroup" (ngSubmit)="newUser(newUserModal)">
-      <div class="form-group">
-        <label for="exampleInputUsername1">Username:</label>
-        <input formControlName="newUserUsername" type="email" class="form-control" id="exampleInputUsername1" aria-describedby="emailHelp"
-               placeholder="Username">
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password:</label>
-        <input formControlName="newUserPassword" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-      </div>
-      <div class="form-group">
-        <label for="exampleFormControlSelect1">Role:</label>
-        <select formControlName="newUserRole" class="form-control" id="exampleFormControlSelect1">
-          <option value="USER">USER</option>
-          <option value="ADMIN">ADMIN</option>
-        </select>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-success" (click)="newUser(newUserModal)">Submit</button>
-      </div>
+    <div class="form-group">
+      <label for="exampleInputUsername1">Username</label>
+      <input [(ngModel)]="username" type="text" class="form-control" id="exampleInputUsername1" aria-describedby="usernameHelp" placeholder="Enter username">
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlSelect1">User type</label>
+      <select [(ngModel)]="userType" class="form-control" id="exampleFormControlSelect1">
+        <option value="USER">Regular user</option>
+        <option>Administrator</option>
+      </select>
     </div>
   </div>
-
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-success" (click)="addUser()">Add user</button>
+  </div>
 </ng-template>
-

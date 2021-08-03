@@ -1,7 +1,6 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {JwtClientService} from "../jwt/jwt-client.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {FormGroup} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {JwtClientService} from '../jwt/jwt-client.service';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-user',
@@ -11,15 +10,13 @@ import {FormGroup} from "@angular/forms";
 
 export class UserComponent implements OnInit {
 
-  isTokenCreatedMsg: string = 'Token missing';
+  isTokenCreatedMsg: any = 'Token missing';
   allUsers: any;
   selectedLogin: any;
   currentUser: any;
   receivedData: any;
-  newUserUsername: any;
-  newUserPassword: any;
-  newUserRole: any;
-  formGroup: any;
+  username: string = null;
+  userType: any = null;
 
   constructor(public jwt: JwtClientService, private modalService: NgbModal) {
   }
@@ -31,9 +28,9 @@ export class UserComponent implements OnInit {
 
   login() {
     if (this.selectedLogin !== undefined) {
-      let user = this.allUsers[this.selectedLogin - 1];
+      const user = this.allUsers[this.selectedLogin - 1];
       this.currentUser = user;
-      this.jwt.generateToken({username: user.username, password: `${user.username}123`},
+      this.jwt.generateToken({username: user.username, password: user.username},
         () => {
           this.isTokenCreatedMsg = `Token created (click to display)`;
       });
@@ -50,7 +47,7 @@ export class UserComponent implements OnInit {
   user() {
     this.jwt.get('/user')
       .subscribe(value => {
-        this.receivedData = value
+        this.receivedData = value;
       }, error => {
         this.receivedData = error;
       });
@@ -62,8 +59,8 @@ export class UserComponent implements OnInit {
   }
 
   showToken() {
-    let msg = this.jwt.token() !== null ? this.jwt.token() : 'Token missing'
-    window.alert(msg)
+    const msg = this.jwt.token() !== null ? this.jwt.token() : 'Token missing';
+    window.alert(msg);
   }
 
   admin() {
@@ -73,12 +70,32 @@ export class UserComponent implements OnInit {
     );
   }
 
-  newUser(newUserModal: TemplateRef<any>) {
+  openModal(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
   }
 
-  openNewUserModal(content) {
-    this.modalService.open(content)
+  addUser() {
+    if (this.username === null || this.userType === null){
+      this.receivedData = 'Username or/and role missing.';
+    } else if (this.jwt.isTokenStored()){
+      const newUserData = {
+        username: `${this.username}`,
+        role: this.userType
+      };
+      this.jwt.post(
+        '/admin/add/user',
+        newUserData
+      ).subscribe(value => {
+          this.allUsers = value.body;
+          this.receivedData = `User ${newUserData.username} successfully created.`;
+        }, error => {
+          this.receivedData = error;
+        });
+    } else {
+      this.receivedData = 'Please log in as an administrator';
+    }
+    this.username = null;
+    this.userType = null;
+    this.modalService.dismissAll();
   }
-
-
 }
